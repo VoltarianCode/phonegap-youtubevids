@@ -26,6 +26,7 @@ function onDeviceReady(){
         var channel = $("#channelName").val();
         setChannel(channel);
         getPlaylist(channel);
+        populateInputs();
 
     });
 
@@ -36,6 +37,8 @@ function onDeviceReady(){
     $("#clearChannel").click(function(){
         clearChannel();
     });
+
+    $(document).on('pageinit', '#options', populateInputs);
 
 }
 
@@ -116,7 +119,21 @@ function setMaxResults(maxResults){
     console.log('Max Results: ' + maxResults);
 }
 
+function clearChannel(){
+    localStorage.removeItem('channel');
+    $('body').pagecontainer('change', '#main', {options});
+    $('#showVideo').html('');
+    $('#logo').show();
+    $('#vidlist').html('');
+    $('#popupDialog').popup('open');
+}
 
+function populateInputs (){
+    var channel = localStorage.getItem('channel');
+    var maxResults = localStorage.getItem('maxresults');
+    $('#channelNameOptions').attr('value', channel);
+    $('#maxResultsOptions').attr('value', maxResults);
+}
 
 
 
