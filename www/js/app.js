@@ -5,12 +5,37 @@ $(document).ready(function(){
 
 function onDeviceReady(){
 
-    var channel = "pewdiepie";
+    //check LocalStorage for channel
+    if (localStorage.channel == null || localStorage.channel == ''){
+        $("#popupDialog").popup('open');
+    } else {
+        var channel = localStorage.getItem('channel');
+    }
+
+    if (localStorage.getItem('maxresults') == ''){
+        localStorage.setItem('maxresults', 10);
+    }
+    //var channel = "pewdiepie";
     getPlaylist(channel);
 
     $(document).on('click', "#vidlist li", function (){
         showVideo($(this).attr("videoId"));
-    })
+    });
+
+    $("#channelBtnOK").click(function(){
+        var channel = $("#channelName").val();
+        setChannel(channel);
+        getPlaylist(channel);
+
+    });
+
+    $("#saveOptions").click(function(){
+        saveOptions();
+    });
+
+    $("#clearChannel").click(function(){
+        clearChannel();
+    });
 
 }
 
@@ -28,7 +53,7 @@ function getPlaylist(channel){
             $.each(data.items, function(i, item){
                 console.log(item);
                 var playlistid = item.contentDetails.relatedPlaylists.uploads;
-                getVideos(playlistid, 10);
+                getVideos(playlistid, localStorage.getItem('maxresults'));
             });
         }
         );
@@ -62,8 +87,41 @@ function showVideo(id){
     var output = '<iframe width="100%" height="315" src="https://www.youtube.com/embed/'+ id +'" frameborder="0" allowfullscreen></iframe>';
     $("#showVideo").html(output);
 
+}
 
+
+function setChannel(channel){
+
+    localStorage.setItem('channel',channel);
+    console.log('Channel Set: ' + channel);
 
 }
+
+
+function saveOptions (){
+    var channel = $("#channelNameOptions").val();
+    setChannel(channel);
+
+    var maxResults = $("#maxResultsOptions").val();
+    setMaxResults(maxResults);
+
+    $('body').pagecontainer('change', '#main', {options});
+
+    getPlaylist(channel);
+
+}
+
+function setMaxResults(maxResults){
+    localStorage.setItem('maxresults', maxResults);
+    console.log('Max Results: ' + maxResults);
+}
+
+
+
+
+
+
+
+
 
 //  UU-lHJZR3Gqxm24_Vd_AJ5Yw
